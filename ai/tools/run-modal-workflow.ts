@@ -74,6 +74,9 @@ export const runModalWorkflow = ({ writer }: Params) =>
 
       try {
         // ยิง request ไปหา Python FastAPI บน Modal พร้อม Auth Token
+        const controller = new AbortController()
+        const timeoutId = setTimeout(() => controller.abort(), 300_000) // 5 min timeout
+
         const response = await fetch(`${modalUrl}/api/workflows`, {
           method: 'POST',
           headers: {
@@ -87,8 +90,11 @@ export const runModalWorkflow = ({ writer }: Params) =>
             pr_number: prNumber,
             notebook_path: notebookPath,
             parameters
-          })
+          }),
+          signal: controller.signal,
         })
+
+        clearTimeout(timeoutId)
 
         if (!response.ok) {
           const errorText = await response.text()
