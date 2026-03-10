@@ -58,6 +58,17 @@ export const runModalWorkflow = ({ writer }: Params) =>
       const secretKey = process.env.INTERNAL_MCP_SECRET_KEY
 
       if (!modalUrl || !secretKey) {
+        writer.write({
+          id: toolCallId,
+          type: 'data-run-command',
+          data: {
+            sandboxId: 'modal-heavy-compute',
+            command: '[Modal Error]',
+            args: [],
+            error: { message: 'MODAL_MCP_URL or INTERNAL_MCP_SECRET_KEY is not configured' },
+            status: 'error',
+          },
+        })
         return "System Error: MODAL_MCP_URL or INTERNAL_MCP_SECRET_KEY is not configured in .env"
       }
 
