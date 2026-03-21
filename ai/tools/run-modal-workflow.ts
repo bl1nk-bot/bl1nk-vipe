@@ -3,7 +3,7 @@ import type { DataPart } from '../messages/data-parts'
 import { getRichError } from './get-rich-error'
 import { tool } from 'ai'
 import description from './run-modal-workflow.md'
-import { z } from 'zod'
+import z from 'zod/v3'
 
 interface Params {
   writer: UIMessageStreamWriter<UIMessage<never, DataPart>>
@@ -12,47 +12,48 @@ interface Params {
 export const runModalWorkflow = ({ writer }: Params) =>
   tool({
     description,
-    inputSchema: z.discriminatedUnion('workflowType', [
-      z.object({
-        workflowType: z.literal('issue'),
-        repo: z.string().describe('GitHub repository (e.g., owner/repo)'),
-        issueNumber: z.number().describe('GitHub issue number'),
-        parameters: z.record(z.any()).optional().describe('Additional parameters for the workflow'),
-      }),
-      z.object({
-        workflowType: z.literal('pr'),
-        repo: z.string().describe('GitHub repository (e.g., owner/repo)'),
-        prNumber: z.number().describe('GitHub PR number'),
-        parameters: z.record(z.any()).optional().describe('Additional parameters for the workflow'),
-      }),
-      z.object({
-        workflowType: z.literal('notebook'),
-        notebookPath: z.string().describe('Path to Jupyter notebook file'),
-        parameters: z.record(z.any()).optional().describe('Additional parameters for Data Science Notebook'),
-      }),
-    ]),
-    execute: async (input, { toolCallId }) => {
-      const params = input as {
-        workflowType: 'issue' | 'pr' | 'notebook'
-        repo?: string
-        issueNumber?: number
-        prNumber?: number
-        notebookPath?: string
-        parameters?: Record<string, any>
-      }
-      const { workflowType, repo, issueNumber, prNumber, notebookPath, parameters } = params
+    inputSchema: z.object({
+      workflowType: z
+        .enum(['issue', 'pr', 'notebook'])
+        .describe('ประเภทของ Heavy Compute workflow ที่ต้องการนำไปรันบน Modal Container'),
+      repo: z
+        .string()
+        .optional()
+        .describe('ชื่อ GitHub repository (เช่น owner/repo) จำเป็นสำหรับ workflow แบบ issue และ pr'),
+      issueNumber: z
+        .number()
+        .optional()
+        .describe('หมายเลข GitHub issue จำเป็นสำหรับ workflow แบบ issue'),
+      prNumber: z
+        .number()
+        .optional()
+        .describe('หมายเลข GitHub PR จำเป็นสำหรับ workflow แบบ pr'),
+      notebookPath: z
+        .string()
+        .optional()
+        .describe('พาร์ทของไฟล์ Jupyter notebook จำเป็นสำหรับ workflow แบบ notebook'),
+      parameters: z
+        .record(z.any())
+        .optional()
+        .describe('พารามิเตอร์เพิ่มเติมสำหรับการรัน Data Science Notebook'),
+    }),
+    execute: async (
+      { workflowType, repo, issueNumber, prNumber, notebookPath, parameters },
+      { toolCallId }
+    ) => {
+      // แจ้ง UI ว่ากำลังเริ่มส่งงานไปที่ Modal (คุณอาจจะต้องเพิ่มไทป์ data-run-modal ลงใน data-parts.ts)
       writer.write({
         id: toolCallId,
-        type: 'data-run-command',
-        data: {
-          sandboxId: 'modal-heavy-compute',
-          commandId: toolCallId,
-          command: `[Modal ${workflowType.toUpperCase()}]`,
-          args: workflowType === 'notebook' ? [notebookPath || ''] : [repo || ''],
-          status: 'executing',
+        type: 'data-run-command', // ใช้ data-run-command ชั่วคราวเพื่อให้ UI เดิมรองรับได้เลย
+        data: { 
+          sandboxId: 'modal-heavy-compute', 
+          command: `[Modal ${workflowType.toUpperCase()}]`, 
+          args: [repo || notebookPath || ''], 
+          status: 'executing' 
         },
       })
 
+      // ดึง URL และ Secret ของ Modal Built-in MCP จาก Environment
       const modalUrl = process.env.MODAL_MCP_URL
       const secretKey = process.env.INTERNAL_MCP_SECRET_KEY
 
@@ -72,6 +73,7 @@ export const runModalWorkflow = ({ writer }: Params) =>
       }
 
       try {
+        // ยิง request ไปหา Python FastAPI บน Modal พร้อม Auth Token
         const controller = new AbortController()
         const timeoutId = setTimeout(() => controller.abort(), 300_000) // 5 min timeout
 
@@ -79,7 +81,7 @@ export const runModalWorkflow = ({ writer }: Params) =>
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-            'Authorization': `Bearer ${secretKey}`,
+            'Authorization': `Bearer ${secretKey}` // MCP Auth Handshake
           },
           body: JSON.stringify({
             workflow_type: workflowType,
@@ -87,7 +89,7 @@ export const runModalWorkflow = ({ writer }: Params) =>
             issue_number: issueNumber,
             pr_number: prNumber,
             notebook_path: notebookPath,
-            parameters,
+            parameters
           }),
           signal: controller.signal,
         })
@@ -99,12 +101,7 @@ export const runModalWorkflow = ({ writer }: Params) =>
           throw new Error(`Modal API Error (${response.status}): ${errorText}`)
         }
 
-        const rawResult = await response.json()
-        const result = z.object({
-          workflow_id: z.string(),
-          duration_seconds: z.number(),
-          result: z.unknown(),
-        }).parse(rawResult)
+        const result = await response.json()
 
         writer.write({
           id: toolCallId,
@@ -119,16 +116,18 @@ export const runModalWorkflow = ({ writer }: Params) =>
           },
         })
 
+        // คืนค่าผลลัพธ์กลับให้ AI Agent รับรู้
         return (
           `Workflow \`${workflowType}\` has been successfully executed on Modal Built-in MCP.\n` +
           `Execution Time: ${result.duration_seconds}s\n` +
           `Result Summary:\n` +
           `\`\`\`json\n${JSON.stringify(result.result, null, 2)}\n\`\`\``
         )
+
       } catch (error) {
         const richError = getRichError({
           action: 'execute workflow on Modal Built-in MCP',
-          args: { workflowType, repo, issueNumber, prNumber, notebookPath },
+          args: { workflowType, repo },
           error,
         })
 
@@ -139,12 +138,12 @@ export const runModalWorkflow = ({ writer }: Params) =>
             sandboxId: 'modal-heavy-compute',
             command: `[Modal Error]`,
             args: [],
-            error: { message: richError.error.message },
+            error: richError.error,
             status: 'error',
           },
         })
 
-        return `Failed to execute workflow: ${richError.error.message}`
+        return richError.message
       }
     },
   })
