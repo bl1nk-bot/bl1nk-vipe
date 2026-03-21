@@ -7,7 +7,9 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "type-check": "tsc --noEmit"
+    "type-check": "tsc --noEmit",
+    "test": "vitest",
+    "test:run": "vitest run"
   },
   "dependencies": {
     "@ai-sdk/gateway": "3.0.59",
@@ -15,6 +17,7 @@
     "@ai-sdk/provider": "3.0.8",
     "@ai-sdk/react": "3.0.107",
     "@ai-sdk/vercel": "2.0.33",
+    "@qwen-code/qwen-code-core": "github:QwenLM/qwen-code#main&path:packages/core",
     "@radix-ui/react-checkbox": "1.3.3",
     "@radix-ui/react-dialog": "1.1.14",
     "@radix-ui/react-label": "2.1.7",
@@ -59,7 +62,8 @@
     "raw-loader": "4.0.2",
     "tailwindcss": "^4",
     "tw-animate-css": "1.3.6",
-    "typescript": "^5"
+    "typescript": "^5",
+    "vitest": "^4.1.0"
   },
   "engines": {
     "node": "22.x"
