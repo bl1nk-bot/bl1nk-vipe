@@ -1,0 +1,18 @@
+{
+  "config": {
+    "default": true,
+    "MD013": false,
+    "MD033": {
+      "allowed_elements": ["details", "summary", "video", "kbd", "br", "a", "img", "div"]
+    },
+    "MD036": false
+  },
+  "globs": [
+    "*.md",
+    "**/*.md",
+    "!**/node_modules/**",
+    "!**/dist/**",
+    "!**/build/**",
+    "!**/.next/**"
+  ]
+}
