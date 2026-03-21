@@ -8,7 +8,7 @@
   },
   "files": {
     "ignoreUnknown": false,
-    "ignore": [
+    "experimentalScannerIgnores": [
       "dist/**",
       "build/**",
       "node_modules/**",
@@ -19,7 +19,7 @@
       "next.config.ts",
       "vitest.config.ts"
     ],
-    "include": [
+    "includes": [
       "**/*.js",
       "**/*.jsx",
       "**/*.ts",

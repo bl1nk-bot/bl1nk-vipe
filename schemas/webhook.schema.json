@@ -1,0 +1,537 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://vibe-coding-agent.example.com/schemas/webhook.schema.json",
+  "title": "Webhook",
+  "description": "Webhook event schema for the Vibe Coding Agent application",
+  "type": "object",
+  "properties": {
+    "webhookId": {
+      "type": "string",
+      "format": "uuid",
+      "description": "Unique identifier for the webhook event"
+    },
+    "eventType": {
+      "type": "string",
+      "enum": [
+        "session.created",
+        "session.updated",
+        "session.completed",
+        "session.error",
+        "sandbox.created",
+        "sandbox.started",
+        "sandbox.stopped",
+        "sandbox.expired",
+        "sandbox.error",
+        "workflow.started",
+        "workflow.step_completed",
+        "workflow.completed",
+        "workflow.failed",
+        "file.generated",
+        "file.uploaded",
+        "command.executed",
+        "command.failed",
+        "error.detected",
+        "error.fixed",
+        "tokens.threshold_reached",
+        "activity.milestone"
+      ],
+      "description": "Type of webhook event"
+    },
+    "timestamp": {
+      "type": "string",
+      "format": "date-time",
+      "description": "ISO 8601 timestamp when the event occurred"
+    },
+    "payload": {
+      "$ref": "#/definitions/payload",
+      "description": "Event payload data specific to the event type"
+    },
+    "signature": {
+      "$ref": "#/definitions/signature",
+      "description": "Cryptographic signature for webhook verification"
+    },
+    "delivery": {
+      "$ref": "#/definitions/delivery",
+      "description": "Delivery information and status"
+    },
+    "source": {
+      "$ref": "#/definitions/source",
+      "description": "Source information for the webhook event"
+    },
+    "metadata": {
+      "type": "object",
+      "additionalProperties": true,
+      "description": "Additional metadata for the webhook event"
+    }
+  },
+  "required": ["webhookId", "eventType", "timestamp", "payload"],
+  "definitions": {
+    "payload": {
+      "type": "object",
+      "oneOf": [
+        {
+          "properties": {
+            "type": { "const": "session" },
+            "data": { "$ref": "#/definitions/sessionPayload" }
+          },
+          "required": ["type", "data"]
+        },
+        {
+          "properties": {
+            "type": { "const": "sandbox" },
+            "data": { "$ref": "#/definitions/sandboxPayload" }
+          },
+          "required": ["type", "data"]
+        },
+        {
+          "properties": {
+            "type": { "const": "workflow" },
+            "data": { "$ref": "#/definitions/workflowPayload" }
+          },
+          "required": ["type", "data"]
+        },
+        {
+          "properties": {
+            "type": { "const": "file" },
+            "data": { "$ref": "#/definitions/filePayload" }
+          },
+          "required": ["type", "data"]
+        },
+        {
+          "properties": {
+            "type": { "const": "command" },
+            "data": { "$ref": "#/definitions/commandPayload" }
+          },
+          "required": ["type", "data"]
+        },
+        {
+          "properties": {
+            "type": { "const": "error" },
+            "data": { "$ref": "#/definitions/errorPayload" }
+          },
+          "required": ["type", "data"]
+        },
+        {
+          "properties": {
+            "type": { "const": "tokens" },
+            "data": { "$ref": "#/definitions/tokensPayload" }
+          },
+          "required": ["type", "data"]
+        },
+        {
+          "properties": {
+            "type": { "const": "activity" },
+            "data": { "$ref": "#/definitions/activityPayload" }
+          },
+          "required": ["type", "data"]
+        }
+      ]
+    },
+    "sessionPayload": {
+      "type": "object",
+      "properties": {
+        "sessionId": {
+          "type": "string",
+          "description": "Session ID"
+        },
+        "status": {
+          "type": "string",
+          "enum": ["active", "paused", "completed", "error"],
+          "description": "Session status"
+        },
+        "sandboxId": {
+          "type": "string",
+          "description": "Associated sandbox ID"
+        },
+        "model": {
+          "type": "string",
+          "description": "AI model used"
+        },
+        "messageCount": {
+          "type": "integer",
+          "description": "Number of messages in session"
+        },
+        "duration": {
+          "type": "integer",
+          "description": "Session duration in milliseconds"
+        },
+        "error": {
+          "$ref": "#/definitions/errorDetail"
+        }
+      },
+      "required": ["sessionId", "status"]
+    },
+    "sandboxPayload": {
+      "type": "object",
+      "properties": {
+        "sandboxId": {
+          "type": "string",
+          "description": "Sandbox ID"
+        },
+        "status": {
+          "type": "string",
+          "enum": ["creating", "running", "stopped", "expired", "error"],
+          "description": "Sandbox status"
+        },
+        "url": {
+          "type": "string",
+          "format": "uri",
+          "description": "Sandbox URL"
+        },
+        "ports": {
+          "type": "array",
+          "items": {
+            "type": "integer"
+          },
+          "description": "Exposed ports"
+        },
+        "sessionId": {
+          "type": "string",
+          "description": "Associated session ID"
+        },
+        "lifetime": {
+          "type": "integer",
+          "description": "Total lifetime in milliseconds"
+        },
+        "error": {
+          "$ref": "#/definitions/errorDetail"
+        }
+      },
+      "required": ["sandboxId", "status"]
+    },
+    "workflowPayload": {
+      "type": "object",
+      "properties": {
+        "workflowId": {
+          "type": "string",
+          "description": "Workflow ID"
+        },
+        "name": {
+          "type": "string",
+          "description": "Workflow name"
+        },
+        "status": {
+          "type": "string",
+          "enum": ["started", "step_completed", "completed", "failed"],
+          "description": "Workflow status"
+        },
+        "currentStep": {
+          "type": "integer",
+          "description": "Current step index"
+        },
+        "totalSteps": {
+          "type": "integer",
+          "description": "Total number of steps"
+        },
+        "stepName": {
+          "type": "string",
+          "description": "Name of the completed/failed step"
+        },
+        "stepId": {
+          "type": "string",
+          "description": "ID of the completed/failed step"
+        },
+        "progress": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 100,
+          "description": "Progress percentage"
+        },
+        "duration": {
+          "type": "integer",
+          "description": "Duration in milliseconds"
+        },
+        "error": {
+          "$ref": "#/definitions/errorDetail"
+        }
+      },
+      "required": ["workflowId", "status"]
+    },
+    "filePayload": {
+      "type": "object",
+      "properties": {
+        "path": {
+          "type": "string",
+          "description": "File path"
+        },
+        "action": {
+          "type": "string",
+          "enum": ["generated", "uploaded", "modified", "deleted"],
+          "description": "Action performed on the file"
+        },
+        "size": {
+          "type": "integer",
+          "description": "File size in bytes"
+        },
+        "sandboxId": {
+          "type": "string",
+          "description": "Sandbox containing the file"
+        },
+        "sessionId": {
+          "type": "string",
+          "description": "Associated session ID"
+        },
+        "mimeType": {
+          "type": "string",
+          "description": "File MIME type"
+        }
+      },
+      "required": ["path", "action", "sandboxId"]
+    },
+    "commandPayload": {
+      "type": "object",
+      "properties": {
+        "cmdId": {
+          "type": "string",
+          "description": "Command ID"
+        },
+        "command": {
+          "type": "string",
+          "description": "Command that was executed"
+        },
+        "args": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Command arguments"
+        },
+        "status": {
+          "type": "string",
+          "enum": ["executed", "failed"],
+          "description": "Command status"
+        },
+        "exitCode": {
+          "type": "integer",
+          "description": "Exit code"
+        },
+        "sandboxId": {
+          "type": "string",
+          "description": "Sandbox where command ran"
+        },
+        "sessionId": {
+          "type": "string",
+          "description": "Associated session ID"
+        },
+        "duration": {
+          "type": "integer",
+          "description": "Duration in milliseconds"
+        },
+        "outputPreview": {
+          "type": "string",
+          "maxLength": 1000,
+          "description": "Preview of command output (truncated)"
+        },
+        "error": {
+          "$ref": "#/definitions/errorDetail"
+        }
+      },
+      "required": ["cmdId", "command", "status", "sandboxId"]
+    },
+    "errorPayload": {
+      "type": "object",
+      "properties": {
+        "errorId": {
+          "type": "string",
+          "description": "Error identifier"
+        },
+        "type": {
+          "type": "string",
+          "enum": ["detected", "fixed"],
+          "description": "Whether error was detected or fixed"
+        },
+        "summary": {
+          "type": "string",
+          "description": "Error summary"
+        },
+        "paths": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Affected file paths"
+        },
+        "sessionId": {
+          "type": "string",
+          "description": "Associated session ID"
+        },
+        "sandboxId": {
+          "type": "string",
+          "description": "Associated sandbox ID"
+        },
+        "cmdId": {
+          "type": "string",
+          "description": "Related command ID"
+        },
+        "autoFixed": {
+          "type": "boolean",
+          "description": "Whether error was auto-fixed"
+        },
+        "fixApplied": {
+          "type": "string",
+          "description": "Description of fix applied"
+        }
+      },
+      "required": ["errorId", "type", "summary"]
+    },
+    "tokensPayload": {
+      "type": "object",
+      "properties": {
+        "sessionId": {
+          "type": "string",
+          "description": "Session ID"
+        },
+        "threshold": {
+          "type": "integer",
+          "description": "Threshold that was reached"
+        },
+        "currentUsage": {
+          "type": "object",
+          "properties": {
+            "total": { "type": "integer" },
+            "input": { "type": "integer" },
+            "output": { "type": "integer" }
+          },
+          "required": ["total", "input", "output"]
+        },
+        "limit": {
+          "type": "integer",
+          "description": "Token limit"
+        },
+        "percentageUsed": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 100,
+          "description": "Percentage of limit used"
+        }
+      },
+      "required": ["sessionId", "threshold", "currentUsage"]
+    },
+    "activityPayload": {
+      "type": "object",
+      "properties": {
+        "sessionId": {
+          "type": "string",
+          "description": "Session ID"
+        },
+        "milestone": {
+          "type": "string",
+          "description": "Milestone name"
+        },
+        "description": {
+          "type": "string",
+          "description": "Milestone description"
+        },
+        "metrics": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "number"
+          },
+          "description": "Associated metrics"
+        }
+      },
+      "required": ["sessionId", "milestone"]
+    },
+    "signature": {
+      "type": "object",
+      "properties": {
+        "algorithm": {
+          "type": "string",
+          "enum": ["sha256", "sha512", "hmac-sha256", "hmac-sha512"],
+          "description": "Signature algorithm used"
+        },
+        "value": {
+          "type": "string",
+          "description": "Hex-encoded signature value"
+        },
+        "timestamp": {
+          "type": "integer",
+          "description": "Unix timestamp for signature creation"
+        }
+      },
+      "required": ["algorithm", "value"]
+    },
+    "delivery": {
+      "type": "object",
+      "properties": {
+        "attempt": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "Current delivery attempt number"
+        },
+        "maxAttempts": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 10,
+          "description": "Maximum delivery attempts"
+        },
+        "status": {
+          "type": "string",
+          "enum": ["pending", "delivered", "failed", "retrying"],
+          "description": "Delivery status"
+        },
+        "deliveredAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "When the webhook was delivered"
+        },
+        "responseCode": {
+          "type": "integer",
+          "description": "HTTP response code from endpoint"
+        },
+        "responseTime": {
+          "type": "integer",
+          "description": "Response time in milliseconds"
+        },
+        "nextRetryAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Next retry time if retrying"
+        },
+        "error": {
+          "type": "string",
+          "description": "Delivery error message"
+        }
+      }
+    },
+    "source": {
+      "type": "object",
+      "properties": {
+        "component": {
+          "type": "string",
+          "description": "Source component (e.g., 'agent', 'sandbox-manager', 'workflow-engine')"
+        },
+        "version": {
+          "type": "string",
+          "description": "Component version"
+        },
+        "environment": {
+          "type": "string",
+          "enum": ["development", "staging", "production"],
+          "description": "Environment where event originated"
+        },
+        "region": {
+          "type": "string",
+          "description": "Cloud region"
+        }
+      }
+    },
+    "errorDetail": {
+      "type": "object",
+      "properties": {
+        "message": {
+          "type": "string",
+          "description": "Error message"
+        },
+        "code": {
+          "type": "string",
+          "description": "Error code"
+        },
+        "stack": {
+          "type": "string",
+          "description": "Stack trace"
+        }
+      }
+    }
+  }
+}
