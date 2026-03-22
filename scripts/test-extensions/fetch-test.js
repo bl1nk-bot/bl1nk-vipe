@@ -54,13 +54,14 @@ class ExtensionInstaller {
     }
   }
 
-  getPackageVersion(packageName) {
-    try {
-      // Try to require the package.json
-      const pkgPath = require.resolve(`${packageName}/package.json`)
-      const pkg = require(pkgPath)
-      return pkg.version || 'unknown'
-    } catch (error) {
+import { execSync } from 'child_process'
+import fs from 'fs/promises'
+import { createRequire } from 'module'
+import path from 'path'
+import { fileURLToPath } from 'url'
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url))
+const require = createRequire(import.meta.url)
       throw new Error('Package not found')
     }
   }
