@@ -14,17 +14,17 @@ const extensions = [
   {
     name: 'agentclientprotocol/sdk',
     packageName: '@agentclientprotocol/sdk',
-    testFile: path.join(__dirname, '../node_modules/@agentclientprotocol/sdk/package.json')
+    testFile: path.join(__dirname, '../../node_modules/@agentclientprotocol/sdk/package.json')
   },
   {
     name: 'qwen-code-core',
     packageName: '@qwen-code/qwen-code-core',
-    testFile: path.join(__dirname, '../node_modules/@qwen-code/qwen-code-core/package.json')
+    testFile: path.join(__dirname, '../../node_modules/@qwen-code/qwen-code-core/package.json')
   },
   {
     name: 'web-templates',
     packageName: '@qwen-code/web-templates',
-    testFile: path.join(__dirname, '../node_modules/@qwen-code/web-templates/package.json')
+    testFile: path.join(__dirname, '../../node_modules/@qwen-code/web-templates/package.json')
   }
 ]
 
