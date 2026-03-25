@@ -1,5 +1,6 @@
 #!/bin/bash
-set -e
+#!/bin/bash
+set -euo pipefail
 
 # --- Python tools ---
 pip install --upgrade pip
