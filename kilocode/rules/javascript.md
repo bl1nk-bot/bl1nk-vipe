@@ -291,7 +291,7 @@ function* getLargeDataset() {
 
   while (true) {
     const pageData = await fetchPage(page, pageSize)
-    if (!pageData.length) break
+async function* getLargeDataset() {
 
     for (const item of pageData) {
       yield item
