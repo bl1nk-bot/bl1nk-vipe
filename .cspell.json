@@ -1,0 +1,55 @@
+{
+  "version": "0.2",
+  "language": "en-US",
+  "files": "**/*",
+  "ignoreWords": [
+    "qwen",
+    "codeload",
+    "pwsh",
+    "filepath",
+    "Brone",
+    "autoplay",
+    "mixpanel",
+    "Sanieria",
+    "sandboxes",
+    "QwenLM",
+    "qwen-code",
+    "taiki",
+    "bazel"
+  ],
+  "ignoreRegExpList": [
+    "/^\\s*```[\\s\\S]*?```\\s*$/gm",
+    "/\\{[^}]*\\}/",
+    "/<[^\u00AD\uFFFA-\uFFFD]*>/",
+    "/^\\s*[.*!@#$%&=] .*/",
+    "/\\b\\w{50,}\\b/"
+  ],
+  "ignorePaths": [
+    "node_modules/**",
+    "dist/**",
+    "build/**",
+    ".next/**",
+    "**/package-lock.json",
+    "**/yarn.lock",
+    "**/pnpm-lock.yaml",
+    "**/*.patch",
+    "**/*.jpg",
+    "**/*.png",
+    "**/*.gif",
+    "**/*.svg",
+    "**/*.ico",
+    "*.min.js"
+  ],
+  "overrides": [
+    {
+      "filename": "**/*.md",
+      "language": "en-GB"
+    },
+    {
+      "filename": "**/*.ts",
+      "language": "en-US,en-GB"
+    }
+  ],
+  "allowCompoundWords": true,
+  "dictionaries": ["softwareTerms"]
+}

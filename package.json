@@ -6,15 +6,28 @@
     "dev": "next dev --turbopack",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint",
-    "type-check": "tsc --noEmit"
+    "lint": "biome check .",
+    "lint:fix": "biome check . --write",
+    "format": "biome format . --write",
+    "lint:next": "next lint",
+    "type-check": "tsc --noEmit",
+    "test": "vitest",
+    "test:run": "vitest run",
+    "test:e2e": "playwright test",
+    "test:e2e:ui": "playwright test --ui",
+    "spellcheck": "cspell \"**/*\"",
+    "knip": "knip",
+    "markdownlint": "markdownlint-cli2",
+    "playwright:install": "playwright install --with-deps chromium"
   },
   "dependencies": {
+    "@agentclientprotocol/sdk": "^0.16.1",
     "@ai-sdk/gateway": "3.0.59",
     "@ai-sdk/openai": "3.0.37",
     "@ai-sdk/provider": "3.0.8",
     "@ai-sdk/react": "3.0.107",
     "@ai-sdk/vercel": "2.0.33",
+    "@qwen-code/qwen-code-core": "github:QwenLM/qwen-code#main&path:packages/core",
     "@radix-ui/react-checkbox": "1.3.3",
     "@radix-ui/react-dialog": "1.1.14",
     "@radix-ui/react-label": "2.1.7",
@@ -50,16 +63,22 @@
     "zustand": "5.0.6"
   },
   "devDependencies": {
+    "@biomejs/biome": "^2.4.8",
+    "@playwright/test": "^1.58.2",
     "@tailwindcss/postcss": "^4",
     "@types/ms": "2.1.0",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "@types/react-syntax-highlighter": "15.5.13",
+    "cspell": "^9.7.0",
+    "knip": "^6.0.1",
+    "markdownlint-cli2": "^0.21.0",
     "raw-loader": "4.0.2",
     "tailwindcss": "^4",
     "tw-animate-css": "1.3.6",
-    "typescript": "^5"
+    "typescript": "^5",
+    "vitest": "^4.1.0"
   },
   "engines": {
     "node": "22.x"

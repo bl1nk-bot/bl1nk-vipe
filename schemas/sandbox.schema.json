@@ -1,0 +1,394 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://vibe-coding-agent.example.com/schemas/sandbox.schema.json",
+  "title": "Sandbox",
+  "description": "Sandbox configuration schema for Vercel Sandbox instances used by the Vibe Coding Agent",
+  "type": "object",
+  "properties": {
+    "sandboxId": {
+      "type": "string",
+      "description": "Unique identifier for the sandbox instance"
+    },
+    "template": {
+      "$ref": "#/definitions/template",
+      "description": "Template configuration for the sandbox"
+    },
+    "resources": {
+      "$ref": "#/definitions/resources",
+      "description": "Resource allocation for the sandbox"
+    },
+    "status": {
+      "type": "string",
+      "enum": ["creating", "running", "paused", "stopping", "stopped", "error", "timeout"],
+      "description": "Current status of the sandbox"
+    },
+    "createdAt": {
+      "type": "string",
+      "format": "date-time",
+      "description": "ISO 8601 timestamp when the sandbox was created"
+    },
+    "expiresAt": {
+      "type": "string",
+      "format": "date-time",
+      "description": "ISO 8601 timestamp when the sandbox will expire"
+    },
+    "ports": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/port"
+      },
+      "description": "Exposed ports for external access"
+    },
+    "url": {
+      "type": "string",
+      "format": "uri",
+      "description": "Primary URL to access the sandbox"
+    },
+    "files": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/file"
+      },
+      "description": "Files in the sandbox"
+    },
+    "commands": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/command"
+      },
+      "description": "Commands executed in the sandbox"
+    },
+    "environment": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "string"
+      },
+      "description": "Environment variables set in the sandbox"
+    },
+    "metadata": {
+      "type": "object",
+      "properties": {
+        "sessionId": {
+          "type": "string",
+          "description": "Associated session ID"
+        },
+        "userId": {
+          "type": "string",
+          "description": "User who created the sandbox"
+        },
+        "tags": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Tags for categorization"
+        }
+      }
+    },
+    "error": {
+      "$ref": "#/definitions/error",
+      "description": "Error information if sandbox is in error state"
+    }
+  },
+  "required": ["sandboxId", "status", "createdAt"],
+  "definitions": {
+    "template": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Template identifier"
+        },
+        "name": {
+          "type": "string",
+          "description": "Human-readable template name"
+        },
+        "description": {
+          "type": "string",
+          "description": "Description of the template"
+        },
+        "baseImage": {
+          "type": "string",
+          "description": "Base Docker image for the sandbox"
+        },
+        "preset": {
+          "type": "string",
+          "enum": ["nodejs", "python", "golang", "rust", "nextjs", "react", "custom"],
+          "description": "Preset configuration type"
+        },
+        "packages": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Pre-installed packages"
+        },
+        "initCommands": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Commands to run on sandbox initialization"
+        }
+      }
+    },
+    "resources": {
+      "type": "object",
+      "properties": {
+        "cpu": {
+          "$ref": "#/definitions/cpuResource",
+          "description": "CPU allocation"
+        },
+        "memory": {
+          "$ref": "#/definitions/memoryResource",
+          "description": "Memory allocation"
+        },
+        "storage": {
+          "$ref": "#/definitions/storageResource",
+          "description": "Storage allocation"
+        },
+        "timeout": {
+          "type": "integer",
+          "minimum": 600000,
+          "maximum": 2700000,
+          "description": "Maximum sandbox lifetime in milliseconds (10-45 minutes)"
+        },
+        "network": {
+          "$ref": "#/definitions/networkResource",
+          "description": "Network configuration"
+        }
+      }
+    },
+    "cpuResource": {
+      "type": "object",
+      "properties": {
+        "cores": {
+          "type": "number",
+          "minimum": 0.1,
+          "description": "Number of CPU cores allocated"
+        },
+        "limit": {
+          "type": "number",
+          "minimum": 0.1,
+          "description": "Maximum CPU cores allowed"
+        }
+      }
+    },
+    "memoryResource": {
+      "type": "object",
+      "properties": {
+        "allocated": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Allocated memory in MB"
+        },
+        "limit": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Maximum memory allowed in MB"
+        }
+      }
+    },
+    "storageResource": {
+      "type": "object",
+      "properties": {
+        "allocated": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Allocated storage in MB"
+        },
+        "limit": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Maximum storage allowed in MB"
+        },
+        "used": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Currently used storage in MB"
+        }
+      }
+    },
+    "networkResource": {
+      "type": "object",
+      "properties": {
+        "bandwidth": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Bandwidth limit in Mbps"
+        },
+        "egress": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Total egress data in MB"
+        }
+      }
+    },
+    "port": {
+      "type": "object",
+      "properties": {
+        "number": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 65535,
+          "description": "Port number"
+        },
+        "protocol": {
+          "type": "string",
+          "enum": ["tcp", "udp"],
+          "default": "tcp",
+          "description": "Network protocol"
+        },
+        "url": {
+          "type": "string",
+          "format": "uri",
+          "description": "Public URL for accessing this port"
+        },
+        "status": {
+          "type": "string",
+          "enum": ["listening", "closed", "error"],
+          "description": "Port status"
+        },
+        "description": {
+          "type": "string",
+          "description": "Description of the service on this port"
+        }
+      },
+      "required": ["number"]
+    },
+    "file": {
+      "type": "object",
+      "properties": {
+        "path": {
+          "type": "string",
+          "description": "File path in the sandbox"
+        },
+        "size": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "File size in bytes"
+        },
+        "type": {
+          "type": "string",
+          "enum": ["file", "directory", "symlink"],
+          "description": "Type of file system entry"
+        },
+        "mimeType": {
+          "type": "string",
+          "description": "MIME type of the file"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "When the file was created"
+        },
+        "modifiedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "When the file was last modified"
+        },
+        "permissions": {
+          "type": "string",
+          "pattern": "^[0-7]{3,4}$",
+          "description": "Unix file permissions (e.g., '644', '0755')"
+        }
+      },
+      "required": ["path", "type"]
+    },
+    "command": {
+      "type": "object",
+      "properties": {
+        "cmdId": {
+          "type": "string",
+          "description": "Unique command identifier"
+        },
+        "command": {
+          "type": "string",
+          "description": "The command that was executed"
+        },
+        "args": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Arguments passed to the command"
+        },
+        "status": {
+          "type": "string",
+          "enum": ["pending", "running", "completed", "failed", "killed"],
+          "description": "Command execution status"
+        },
+        "exitCode": {
+          "type": "integer",
+          "description": "Exit code of the command"
+        },
+        "background": {
+          "type": "boolean",
+          "description": "Whether the command runs in the background"
+        },
+        "startedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "When the command started"
+        },
+        "completedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "When the command completed"
+        },
+        "duration": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Duration in milliseconds"
+        },
+        "logs": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/logEntry"
+          },
+          "description": "Command output logs"
+        }
+      },
+      "required": ["cmdId", "command", "status"]
+    },
+    "logEntry": {
+      "type": "object",
+      "properties": {
+        "data": {
+          "type": "string",
+          "description": "Log content"
+        },
+        "stream": {
+          "type": "string",
+          "enum": ["stdout", "stderr"],
+          "description": "Output stream type"
+        },
+        "timestamp": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Unix timestamp in milliseconds"
+        }
+      },
+      "required": ["data", "stream", "timestamp"]
+    },
+    "error": {
+      "type": "object",
+      "properties": {
+        "message": {
+          "type": "string",
+          "description": "Error message"
+        },
+        "code": {
+          "type": "string",
+          "description": "Error code"
+        },
+        "details": {
+          "type": "object",
+          "additionalProperties": true,
+          "description": "Additional error details"
+        }
+      },
+      "required": ["message"]
+    }
+  }
+}

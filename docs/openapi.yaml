@@ -1,0 +1,328 @@
+openapi: 3.1.0
+info:
+  title: Vibe Coding Agent API
+  version: 1.0.0
+  description: API for interacting with the Vibe Coding Agent, including models, chat, sandboxes, and error handling.
+servers:
+  - url: http://localhost:3000
+    description: Local development server
+paths:
+  /api/models:
+    get:
+      summary: Get available AI models
+      operationId: getModels
+      responses:
+        '200':
+          description: List of available models
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  models:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Model'
+              example:
+                models:
+                  - id: gpt-4
+                    name: GPT-4
+                  - id: claude-3
+                    name: Claude 3
+  /api/chat:
+    post:
+      summary: Stream chat responses for agent interactions
+      operationId: chat
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                messages:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/ChatUIMessage'
+                modelId:
+                  type: string
+                  description: Optional model identifier
+                reasoningEffort:
+                  type: string
+                  enum: [low, medium]
+                  description: Optional reasoning effort level
+            example:
+              messages:
+                - role: user
+                  content: Hello
+              modelId: gpt-4
+              reasoningEffort: medium
+      responses:
+        '200':
+          description: Streaming chat response
+          content:
+            text/plain:
+              schema:
+                type: string
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /api/sandboxes/{sandboxId}:
+    get:
+      summary: Get sandbox status
+      operationId: getSandboxStatus
+      parameters:
+        - name: sandboxId
+          in: path
+          required: true
+          schema:
+            type: string
+          description: The sandbox identifier
+      responses:
+        '200':
+          description: Sandbox status
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    enum: [running, stopped]
+              example:
+                status: running
+        '404':
+          description: Sandbox not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /api/sandboxes:
+    post:
+      summary: Create a new sandbox from codebase structure
+      operationId: createSandbox
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                template:
+                  type: string
+                  description: Optional template identifier
+            example:
+              template: default
+      responses:
+        '201':
+          description: Sandbox created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  sandboxId:
+                    type: string
+                  url:
+                    type: string
+                    format: uri
+              example:
+                sandboxId: abc123
+                url: http://sandbox.abc123.local
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /api/sandboxes/{sandboxId}/files:
+    get:
+      summary: List files in sandbox
+      operationId: listSandboxFiles
+      parameters:
+        - name: sandboxId
+          in: path
+          required: true
+          schema:
+            type: string
+          description: The sandbox identifier
+        - name: cwd
+          in: query
+          schema:
+            type: string
+          description: Current working directory path
+        - name: recursive
+          in: query
+          schema:
+            type: boolean
+          description: Whether to list recursively
+      responses:
+        '200':
+          description: List of files
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    name:
+                      type: string
+                    path:
+                      type: string
+                    type:
+                      type: string
+                      enum: [file, directory]
+              example:
+                - name: index.js
+                  path: /index.js
+                  type: file
+        '404':
+          description: Sandbox not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /api/sandboxes/{sandboxId}/cmds:
+    post:
+      summary: Run a command in sandbox
+      operationId: runCommand
+      parameters:
+        - name: sandboxId
+          in: path
+          required: true
+          schema:
+            type: string
+          description: The sandbox identifier
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                cmd:
+                  type: string
+                args:
+                  type: array
+                  items:
+                    type: string
+              required:
+                - cmd
+            example:
+              cmd: ls
+              args: [-la]
+      responses:
+        '202':
+          description: Command queued
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+              example:
+                id: cmd123
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /api/sandboxes/{sandboxId}/cmds/{cmdId}/logs:
+    get:
+      summary: Get command logs
+      operationId: getCommandLogs
+      parameters:
+        - name: sandboxId
+          in: path
+          required: true
+          schema:
+            type: string
+          description: The sandbox identifier
+        - name: cmdId
+          in: path
+          required: true
+          schema:
+            type: string
+          description: The command identifier
+      responses:
+        '200':
+          description: Command logs
+          content:
+            text/plain:
+              schema:
+                type: string
+              example: "Running ls -la\n./file1.txt\n./file2.js\n"
+        '404':
+          description: Command or sandbox not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /api/errors:
+    get:
+      summary: Get error summary
+      operationId: getErrors
+      responses:
+        '200':
+          description: Error summary
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    time:
+                      type: string
+                      format: date-time
+                    message:
+                      type: string
+                    stack:
+                      type: string
+              example:
+                - time: '2023-10-01T12:00:00Z'
+                  message: 'Connection timeout'
+                  stack: 'Error: Connection timeout\n at ...'
+components:
+  schemas:
+    Model:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+      required:
+        - id
+        - name
+    ChatUIMessage:
+      type: object
+      properties:
+        role:
+          type: string
+          enum: [user, assistant]
+        content:
+          type: string
+      required:
+        - role
+        - content
+    Error:
+      type: object
+      properties:
+        error:
+          type: string
+        message:
+          type: string
+      required:
+        - error

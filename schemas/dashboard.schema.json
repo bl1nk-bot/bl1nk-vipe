@@ -1,0 +1,317 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://vibe-coding-agent.example.com/schemas/dashboard.schema.json",
+  "title": "Dashboard",
+  "description": "Dashboard data schema for the Vibe Coding Agent application including GitHub-style heatmap and activity metrics",
+  "type": "object",
+  "properties": {
+    "heatmap": {
+      "$ref": "#/definitions/heatmap",
+      "description": "GitHub-style contribution heatmap data"
+    },
+    "metrics": {
+      "$ref": "#/definitions/metrics",
+      "description": "Activity metrics summary"
+    },
+    "charts": {
+      "$ref": "#/definitions/charts",
+      "description": "Chart data for activity visualization"
+    },
+    "summary": {
+      "$ref": "#/definitions/summary",
+      "description": "Dashboard summary statistics"
+    }
+  },
+  "required": ["heatmap", "metrics", "charts"],
+  "definitions": {
+    "heatmap": {
+      "type": "object",
+      "properties": {
+        "days": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/heatmapDay"
+          },
+          "description": "Array of day entries for the heatmap (typically 365 days)"
+        },
+        "weeks": {
+          "type": "integer",
+          "description": "Number of weeks represented in the heatmap"
+        },
+        "startDate": {
+          "type": "string",
+          "format": "date",
+          "description": "Start date of the heatmap range"
+        },
+        "endDate": {
+          "type": "string",
+          "format": "date",
+          "description": "End date of the heatmap range"
+        },
+        "colorScale": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Color scale for contribution levels (e.g., ['#ebedf0', '#9be9a8', '#40c463', '#30a14e', '#216e39'])"
+        }
+      },
+      "required": ["days", "startDate", "endDate"]
+    },
+    "heatmapDay": {
+      "type": "object",
+      "properties": {
+        "date": {
+          "type": "string",
+          "format": "date",
+          "description": "Date in YYYY-MM-DD format"
+        },
+        "contributionCount": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Number of contributions/activities on this day"
+        },
+        "level": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 4,
+          "description": "Contribution level (0-4) for color mapping"
+        },
+        "weekday": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 6,
+          "description": "Day of week (0 = Sunday, 6 = Saturday)"
+        }
+      },
+      "required": ["date", "contributionCount", "level"]
+    },
+    "metrics": {
+      "type": "object",
+      "properties": {
+        "tokensUsed": {
+          "type": "object",
+          "properties": {
+            "total": {
+              "type": "integer",
+              "minimum": 0,
+              "description": "Total tokens used"
+            },
+            "input": {
+              "type": "integer",
+              "minimum": 0,
+              "description": "Input tokens used"
+            },
+            "output": {
+              "type": "integer",
+              "minimum": 0,
+              "description": "Output tokens generated"
+            }
+          },
+          "required": ["total", "input", "output"]
+        },
+        "filesChanged": {
+          "type": "object",
+          "properties": {
+            "created": {
+              "type": "integer",
+              "minimum": 0,
+              "description": "Number of files created"
+            },
+            "modified": {
+              "type": "integer",
+              "minimum": 0,
+              "description": "Number of files modified"
+            },
+            "deleted": {
+              "type": "integer",
+              "minimum": 0,
+              "description": "Number of files deleted"
+            },
+            "total": {
+              "type": "integer",
+              "minimum": 0,
+              "description": "Total number of file changes"
+            }
+          },
+          "required": ["created", "modified", "deleted", "total"]
+        },
+        "commandsRun": {
+          "type": "object",
+          "properties": {
+            "total": {
+              "type": "integer",
+              "minimum": 0,
+              "description": "Total commands executed"
+            },
+            "successful": {
+              "type": "integer",
+              "minimum": 0,
+              "description": "Commands that completed successfully"
+            },
+            "failed": {
+              "type": "integer",
+              "minimum": 0,
+              "description": "Commands that failed"
+            },
+            "avgDuration": {
+              "type": "number",
+              "minimum": 0,
+              "description": "Average command duration in milliseconds"
+            }
+          },
+          "required": ["total", "successful", "failed"]
+        },
+        "sessions": {
+          "type": "object",
+          "properties": {
+            "total": {
+              "type": "integer",
+              "minimum": 0,
+              "description": "Total sessions"
+            },
+            "active": {
+              "type": "integer",
+              "minimum": 0,
+              "description": "Currently active sessions"
+            },
+            "completed": {
+              "type": "integer",
+              "minimum": 0,
+              "description": "Completed sessions"
+            }
+          },
+          "required": ["total", "active", "completed"]
+        }
+      },
+      "required": ["tokensUsed", "filesChanged", "commandsRun", "sessions"]
+    },
+    "charts": {
+      "type": "object",
+      "properties": {
+        "activityOverTime": {
+          "$ref": "#/definitions/lineChart",
+          "description": "Line chart data for activity over time"
+        },
+        "tokenUsage": {
+          "$ref": "#/definitions/lineChart",
+          "description": "Line chart data for token usage over time"
+        },
+        "commandTypes": {
+          "$ref": "#/definitions/pieChart",
+          "description": "Pie chart data for command type distribution"
+        },
+        "fileTypes": {
+          "$ref": "#/definitions/pieChart",
+          "description": "Pie chart data for generated file type distribution"
+        }
+      },
+      "required": ["activityOverTime"]
+    },
+    "lineChart": {
+      "type": "object",
+      "properties": {
+        "labels": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "X-axis labels (dates or time periods)"
+        },
+        "datasets": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/chartDataset"
+          },
+          "description": "Array of data series"
+        }
+      },
+      "required": ["labels", "datasets"]
+    },
+    "chartDataset": {
+      "type": "object",
+      "properties": {
+        "label": {
+          "type": "string",
+          "description": "Label for the dataset"
+        },
+        "data": {
+          "type": "array",
+          "items": {
+            "type": "number"
+          },
+          "description": "Data points"
+        },
+        "borderColor": {
+          "type": "string",
+          "description": "Line color"
+        },
+        "backgroundColor": {
+          "type": "string",
+          "description": "Fill color"
+        },
+        "fill": {
+          "type": "boolean",
+          "description": "Whether to fill the area under the line"
+        }
+      },
+      "required": ["label", "data"]
+    },
+    "pieChart": {
+      "type": "object",
+      "properties": {
+        "labels": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Category labels"
+        },
+        "data": {
+          "type": "array",
+          "items": {
+            "type": "number"
+          },
+          "description": "Values for each category"
+        },
+        "colors": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Colors for each segment"
+        }
+      },
+      "required": ["labels", "data"]
+    },
+    "summary": {
+      "type": "object",
+      "properties": {
+        "totalActivities": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Total number of activities"
+        },
+        "avgSessionDuration": {
+          "type": "number",
+          "minimum": 0,
+          "description": "Average session duration in minutes"
+        },
+        "successRate": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 100,
+          "description": "Success rate percentage"
+        },
+        "mostActiveDay": {
+          "type": "string",
+          "description": "Most active day of the week"
+        },
+        "mostUsedModel": {
+          "type": "string",
+          "description": "Most frequently used AI model"
+        }
+      }
+    }
+  }
+}

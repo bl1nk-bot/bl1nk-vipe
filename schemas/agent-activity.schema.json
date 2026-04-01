@@ -1,0 +1,107 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://vibe-coding-agent.example.com/schemas/agent-activity.schema.json",
+  "title": "AgentActivity",
+  "description": "Agent activity tracking schema for monitoring agent actions and tool calls",
+  "type": "object",
+  "properties": {
+    "activityId": {
+      "type": "string",
+      "format": "uuid",
+      "description": "Unique identifier for the activity"
+    },
+    "sessionId": {
+      "type": "string",
+      "description": "Reference to the parent session"
+    },
+    "timestamp": {
+      "type": "string",
+      "format": "date-time",
+      "description": "ISO 8601 timestamp when the activity occurred"
+    },
+    "type": {
+      "type": "string",
+      "enum": [
+        "thinking",
+        "tool_call",
+        "tool_result",
+        "file_write",
+        "file_read",
+        "command_run",
+        "sandbox_create",
+        "sandbox_url_get",
+        "error_report",
+        "error_fix"
+      ],
+      "description": "Type of agent activity"
+    },
+    "duration": {
+      "type": "number",
+      "minimum": 0,
+      "description": "Duration of the activity in milliseconds"
+    },
+    "status": {
+      "type": "string",
+      "enum": ["pending", "running", "completed", "failed", "cancelled"],
+      "description": "Status of the activity"
+    },
+    "input": {
+      "type": "object",
+      "description": "Input data for the activity"
+    },
+    "output": {
+      "type": "object",
+      "description": "Output data from the activity"
+    },
+    "error": {
+      "$ref": "#/definitions/error",
+      "description": "Error information if the activity failed"
+    },
+    "toolCallId": {
+      "type": "string",
+      "description": "Tool call identifier for tool-related activities"
+    },
+    "metadata": {
+      "type": "object",
+      "properties": {
+        "model": {
+          "type": "string",
+          "description": "AI model used for this activity"
+        },
+        "tokensUsed": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Number of tokens consumed"
+        },
+        "filesAffected": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "List of file paths affected by this activity"
+        }
+      }
+    }
+  },
+  "required": ["activityId", "sessionId", "timestamp", "type", "status"],
+  "definitions": {
+    "error": {
+      "type": "object",
+      "properties": {
+        "message": {
+          "type": "string",
+          "description": "Error message"
+        },
+        "code": {
+          "type": "string",
+          "description": "Error code"
+        },
+        "stack": {
+          "type": "string",
+          "description": "Stack trace"
+        }
+      },
+      "required": ["message"]
+    }
+  }
+}

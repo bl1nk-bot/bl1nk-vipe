@@ -1,0 +1,36 @@
+{
+  "$schema": "@knip/schema.json",
+  "ignore": [
+    "**/dist/**",
+    "**/build/**",
+    "**/node_modules/**",
+    ".next/**"
+  ],
+  "ignoreDependencies": [
+    "@qwen-code/qwen-code-core",
+    "@qwen-code/web-templates",
+    "@tailwindcss/postcss",
+    "tw-animate-css",
+    "@vercel/sandbox"
+  ],
+  "ignoreExports": ["vitest.config.*", "next.config.*", "*.config.ts", "*.config.js"],
+  "ignoreMembers": ["eslint", "tsc"],
+  "workspaces": {
+    ".": {
+      "entry": [
+        "app/**/*.ts",
+        "app/**/*.tsx",
+        "components/**/*.{ts,tsx}",
+        "ai/**/*.{ts,tsx}",
+        "app/api/**/*.{ts,tsx}",
+        "next.config.ts",
+        "middleware.ts"
+      ],
+      "project": "**/*.{ts,tsx}",
+      "include": [
+        "vitest.setup.*",
+        "next-env.d.ts"
+      ]
+    }
+  }
+}

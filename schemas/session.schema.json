@@ -1,0 +1,143 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://vibe-coding-agent.example.com/schemas/session.schema.json",
+  "title": "Session",
+  "description": "Session management schema for the Vibe Coding Agent application",
+  "type": "object",
+  "properties": {
+    "sessionId": {
+      "type": "string",
+      "format": "uuid",
+      "description": "Unique identifier for the session"
+    },
+    "createdAt": {
+      "type": "string",
+      "format": "date-time",
+      "description": "ISO 8601 timestamp when the session was created"
+    },
+    "updatedAt": {
+      "type": "string",
+      "format": "date-time",
+      "description": "ISO 8601 timestamp when the session was last updated"
+    },
+    "status": {
+      "type": "string",
+      "enum": ["active", "paused", "completed", "error"],
+      "description": "Current status of the session"
+    },
+    "sandboxId": {
+      "type": "string",
+      "description": "Reference to the associated sandbox ID"
+    },
+    "messages": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/message"
+      },
+      "description": "Array of chat messages in the session"
+    },
+    "metadata": {
+      "$ref": "#/definitions/metadata",
+      "description": "Session metadata including model configuration"
+    },
+    "generatedFiles": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "List of file paths generated during the session"
+    },
+    "paths": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "List of all file paths in the sandbox"
+    },
+    "url": {
+      "type": "string",
+      "format": "uri",
+      "description": "URL to access the sandbox preview"
+    },
+    "urlUUID": {
+      "type": "string",
+      "format": "uuid",
+      "description": "Unique identifier for the preview URL"
+    }
+  },
+  "required": ["sessionId", "createdAt", "updatedAt", "status", "messages"],
+  "definitions": {
+    "message": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique message identifier"
+        },
+        "role": {
+          "type": "string",
+          "enum": ["user", "assistant", "system"],
+          "description": "Role of the message sender"
+        },
+        "content": {
+          "type": "string",
+          "description": "Text content of the message"
+        },
+        "parts": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/messagePart"
+          },
+          "description": "Structured parts of the message"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Timestamp when the message was created"
+        }
+      },
+      "required": ["id", "role", "content"]
+    },
+    "messagePart": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": ["text", "data-create-sandbox", "data-generating-files", "data-run-command", "data-get-sandbox-url", "data-report-errors"],
+          "description": "Type of the message part"
+        },
+        "data": {
+          "type": "object",
+          "description": "Data payload for the message part"
+        }
+      },
+      "required": ["type"]
+    },
+    "metadata": {
+      "type": "object",
+      "properties": {
+        "model": {
+          "type": "string",
+          "description": "AI model identifier used for this session",
+          "enum": ["anthropic/claude-opus-4.6", "anthropic/claude-sonnet-4.6", "openai/gpt-5.3-codex", "xai/grok-4.1-fast-reasoning"]
+        },
+        "temperature": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 2,
+          "description": "Temperature setting for the AI model"
+        },
+        "reasoningEffort": {
+          "type": "string",
+          "enum": ["low", "medium"],
+          "description": "Reasoning effort level for the model"
+        },
+        "fixErrors": {
+          "type": "boolean",
+          "description": "Whether automatic error fixing is enabled"
+        }
+      },
+      "required": ["model"]
+    }
+  }
+}
