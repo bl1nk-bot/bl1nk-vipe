@@ -16,82 +16,90 @@ export function MCPInterface() {
   }, [])
 
   return (
-    <main className="flex-1 overflow-hidden h-screen flex flex-col bg-background">
-      {/* Header */}
-      <div className={`border-b bg-card ${isMobile ? 'p-3' : 'p-6'}`}>
+    <main className="flex-1 overflow-hidden h-screen flex flex-col bg-gradient-to-br from-background via-background to-background/95">
+      {/* Header - Modern Card Design */}
+      <div className={`border-b bg-card/50 backdrop-blur-sm sticky top-0 z-10 ${isMobile ? 'p-3' : 'p-6'}`}>
         <div className="max-w-7xl mx-auto">
-          <div className="flex items-center justify-between gap-2 mb-2">
-            <h1 className={`font-bold ${isMobile ? 'text-xl' : 'text-3xl'}`}>MCP Interface</h1>
+          <div className="flex items-center justify-between gap-3 mb-3">
+            <div className="flex items-center gap-2">
+              <div className="h-10 w-10 rounded-lg bg-gradient-to-br from-primary to-primary/60 flex items-center justify-center">
+                <span className="text-white font-bold">M</span>
+              </div>
+              <div>
+                <h1 className={`font-bold ${isMobile ? 'text-lg' : 'text-2xl'}`}>MCP Console</h1>
+                <p className={`text-muted-foreground ${isMobile ? 'text-xs' : 'text-xs'}`}>Model Context Protocol</p>
+              </div>
+            </div>
             <Link
               href="/"
               className={`
-                px-3 py-2 rounded-md border border-input hover:bg-accent transition-colors
-                ${isMobile ? 'text-xs h-8' : 'text-sm h-10'}
-                flex items-center justify-center touch-manipulation
+                px-4 py-2 rounded-lg border border-input bg-card hover:bg-accent transition-all duration-200
+                ${isMobile ? 'text-xs h-9' : 'text-sm h-10'}
+                flex items-center justify-center touch-manipulation active:scale-95
               `}
             >
-              Back
+              ← Back
             </Link>
           </div>
           <p className={`text-muted-foreground ${isMobile ? 'text-xs' : 'text-sm'}`}>
-            Model Context Protocol (MCP) server communication interface
+            Connect to MCP servers, build requests, and monitor responses in real-time
           </p>
         </div>
       </div>
 
       {/* Main Content - Responsive Grid */}
-      <div className={`flex-1 overflow-y-auto ${isMobile ? 'p-3' : 'p-6'}`}>
+      <div className={`flex-1 overflow-y-auto ${isMobile ? 'p-2.5' : 'p-6'}`}>
         <div className="max-w-7xl mx-auto">
           {isMobile ? (
-            /* Mobile: Single Column Layout */
-            <div className="flex flex-col gap-4">
+            /* Mobile: Single Column Layout - Optimized for touch */
+            <div className="flex flex-col gap-3">
               {/* Server Manager */}
-              <div className="border rounded-lg p-4 bg-card">
+              <section className="border border-border/50 rounded-xl p-4 bg-card/80 backdrop-blur-sm shadow-sm hover:shadow-md transition-all">
                 <ServerManager />
-              </div>
+              </section>
 
               {/* Connection Monitor */}
-              <div className="border rounded-lg p-4 bg-card">
+              <section className="border border-border/50 rounded-xl p-4 bg-card/80 backdrop-blur-sm shadow-sm hover:shadow-md transition-all">
                 <ConnectionMonitor />
-              </div>
+              </section>
 
               {/* Request Builder */}
-              <div className="border rounded-lg p-4 bg-card">
+              <section className="border border-border/50 rounded-xl p-4 bg-card/80 backdrop-blur-sm shadow-sm hover:shadow-md transition-all">
                 <RequestBuilder />
-              </div>
+              </section>
 
               {/* Response Display */}
-              <div className="border rounded-lg p-4 bg-card">
+              <section className="border border-border/50 rounded-xl p-4 bg-card/80 backdrop-blur-sm shadow-sm hover:shadow-md transition-all max-h-96">
                 <ResponseDisplay />
-              </div>
+              </section>
             </div>
           ) : (
             /* Desktop: Two-Column Layout */
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 auto-rows-max">
               {/* Left Column - Server & Connection (1/3) */}
               <div className="flex flex-col gap-6">
                 {/* Server Manager */}
-                <div className="border rounded-lg p-6 bg-card">
+                <section className="border border-border/50 rounded-xl p-6 bg-card/80 backdrop-blur-sm shadow-sm hover:shadow-md transition-all">
                   <ServerManager />
-                </div>
+                </section>
 
                 {/* Connection Monitor */}
-                <div className="border rounded-lg p-6 bg-card">
+                <section className="border border-border/50 rounded-xl p-6 bg-card/80 backdrop-blur-sm shadow-sm hover:shadow-md transition-all">
                   <ConnectionMonitor />
-                </div>
+                </section>
               </div>
 
               {/* Right Column - Request & Response (2/3) */}
               <div className="lg:col-span-2 flex flex-col gap-6">
                 {/* Request Builder */}
-                <div className="border rounded-lg p-6 bg-card">
+                <section className="border border-border/50 rounded-xl p-6 bg-card/80 backdrop-blur-sm shadow-sm hover:shadow-md transition-all">
                   <RequestBuilder />
-                </div>
+                </section>
 
                 {/* Response Display */}
-                <div className="border rounded-lg p-6 bg-card max-h-[500px] overflow-y-auto">
+                <section className="border border-border/50 rounded-xl p-6 bg-card/80 backdrop-blur-sm shadow-sm hover:shadow-md transition-all min-h-96 max-h-[600px] overflow-y-auto">
                   <ResponseDisplay />
-                </div>
+                </section>
               </div>
             </div>
           )}
@@ -99,15 +107,19 @@ export function MCPInterface() {
       </div>
 
       {/* Footer Info - Mobile Safe Area */}
-      <div
+      <footer
         className={`
-          border-t bg-card text-muted-foreground text-center
-          ${isMobile ? 'text-xs p-2' : 'text-sm p-4'}
+          border-t border-border/50 bg-card/50 backdrop-blur-sm text-muted-foreground text-center
+          transition-all
+          ${isMobile ? 'text-xs p-2.5' : 'text-sm p-4'}
           pb-[max(1rem,env(safe-area-inset-bottom))]
         `}
       >
-        MCP Interface • Secure • Mobile-First • Real-time
-      </div>
+        <div className="flex items-center justify-center gap-2">
+          <span className="h-1.5 w-1.5 rounded-full bg-green-500" />
+          <span>MCP Console • Secure • Mobile-First • Real-time</span>
+        </div>
+      </footer>
     </main>
   )
 }
