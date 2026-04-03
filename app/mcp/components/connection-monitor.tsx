@@ -1,134 +1,77 @@
 'use client'
 
 import { useMCPStore } from '@/lib/mcp-store'
-import { useMobile } from '@/hooks/use-mobile'
+
+const statusConfig = {
+  connected: { label: 'Connected', color: 'text-green-700 dark:text-green-400', bg: 'bg-green-50 dark:bg-green-950', border: 'border-green-200 dark:border-green-800', dot: 'bg-green-500' },
+  connecting: { label: 'Connecting', color: 'text-blue-700 dark:text-blue-400', bg: 'bg-blue-50 dark:bg-blue-950', border: 'border-blue-200 dark:border-blue-800', dot: 'bg-blue-500 animate-pulse' },
+  error: { label: 'Error', color: 'text-red-700 dark:text-red-400', bg: 'bg-red-50 dark:bg-red-950', border: 'border-red-200 dark:border-red-800', dot: 'bg-red-500' },
+  disconnected: { label: 'Disconnected', color: 'text-muted-foreground', bg: 'bg-muted', border: 'border-border', dot: 'bg-gray-500' },
+} as const
 
 export function ConnectionMonitor() {
-  const { isMobile } = useMobile()
   const store = useMCPStore()
-
-  const statusDetails = {
-    connected: {
-      label: 'Connected',
-      color: 'text-green-700 dark:text-green-400',
-      bgColor: 'bg-green-50 dark:bg-green-950',
-      borderColor: 'border-green-200 dark:border-green-800',
-      icon: '●',
-    },
-    connecting: {
-      label: 'Connecting',
-      color: 'text-blue-700 dark:text-blue-400',
-      bgColor: 'bg-blue-50 dark:bg-blue-950',
-      borderColor: 'border-blue-200 dark:border-blue-800',
-      icon: '◐',
-    },
-    error: {
-      label: 'Connection Error',
-      color: 'text-red-700 dark:text-red-400',
-      bgColor: 'bg-red-50 dark:bg-red-950',
-      borderColor: 'border-red-200 dark:border-red-800',
-      icon: '✕',
-    },
-    disconnected: {
-      label: 'Disconnected',
-      color: 'text-gray-700 dark:text-gray-400',
-      bgColor: 'bg-gray-50 dark:bg-gray-950',
-      borderColor: 'border-gray-200 dark:border-gray-800',
-      icon: '○',
-    },
-  }
-
-  const status = statusDetails[store.connectionStatus]
+  const status = statusConfig[store.connectionStatus]
+  const selectedServerInfo = store.availableServers.find(s => s.id === store.selectedServer)
+  const successCount = store.responseHistory.filter(r => !r.response.error).length
+  const lastEntry = store.responseHistory.at(-1)
 
   return (
-    <div className={`flex flex-col ${isMobile ? 'gap-3' : 'gap-4'}`}>
-      <h3 className={`font-semibold ${isMobile ? 'text-base' : 'text-lg'}`}>Connection Status</h3>
+    <div className="flex flex-col gap-3 sm:gap-4">
+      <h3 className="font-semibold text-base sm:text-lg">Connection Status</h3>
 
-      <div className={`border rounded-lg p-4 ${status.bgColor} ${status.borderColor}`}>
+      <div className={`border rounded-lg p-4 ${status.bg} ${status.border}`}>
         <div className="flex items-center gap-3 mb-3">
-          <span className={`text-2xl ${status.color} ${store.connectionStatus === 'connecting' ? 'animate-spin' : ''}`}>
-            {status.icon}
-          </span>
-          <div>
+          <span className={`h-3 w-3 rounded-full shrink-0 ${status.dot}`} aria-hidden="true" />
+          <div className="min-w-0">
             <div className={`font-semibold ${status.color}`}>{status.label}</div>
-            {store.selectedServer && (
-              <div className={`text-sm ${isMobile ? 'text-xs' : 'text-sm'} text-muted-foreground`}>
-                {store.availableServers.find(s => s.id === store.selectedServer)?.name}
-              </div>
+            {selectedServerInfo && (
+              <div className="text-xs sm:text-sm text-muted-foreground truncate">{selectedServerInfo.name}</div>
             )}
           </div>
         </div>
 
-        {/* Server Details */}
-        {store.selectedServer && (
-          <div className={`space-y-2 text-sm ${isMobile ? 'text-xs' : 'text-sm'}`}>
+        {selectedServerInfo && (
+          <dl className="space-y-1.5 text-xs sm:text-sm">
             <div>
-              <span className="font-medium">Server URL:</span>
-              <div className="break-all text-muted-foreground">
-                {store.availableServers.find(s => s.id === store.selectedServer)?.url}
+              <dt className="font-medium inline">URL: </dt>
+              <dd className="inline break-all text-muted-foreground">{selectedServerInfo.url}</dd>
+            </div>
+            <div>
+              <dt className="font-medium inline">Requests: </dt>
+              <dd className="inline text-muted-foreground">{store.responseHistory.length}</dd>
+            </div>
+            {lastEntry && (
+              <div>
+                <dt className="font-medium inline">Last: </dt>
+                <dd className="inline text-muted-foreground">{lastEntry.request.method}</dd>
               </div>
-            </div>
-
-            <div>
-              <span className="font-medium">Request Count:</span>
-              <span className="text-muted-foreground ml-2">{store.responseHistory.length}</span>
-            </div>
-
-            {store.responseHistory.length > 0 && (
-              <>
-                <div>
-                  <span className="font-medium">Last Request:</span>
-                  <div className="text-muted-foreground">
-                    {store.responseHistory[store.responseHistory.length - 1].request.method}
-                  </div>
-                </div>
-                <div>
-                  <span className="font-medium">Last Response Time:</span>
-                  <div className="text-muted-foreground">
-                    {new Date(
-                      store.responseHistory[store.responseHistory.length - 1].response.timestamp
-                    ).toLocaleTimeString()}
-                  </div>
-                </div>
-              </>
             )}
-          </div>
+          </dl>
         )}
 
-        {/* Error Details */}
         {store.connectionError && (
-          <div className="mt-4 p-3 bg-red-100 dark:bg-red-900 rounded border border-red-300 dark:border-red-700">
-            <div className={`font-medium text-red-900 dark:text-red-100 ${isMobile ? 'text-xs' : 'text-sm'}`}>
-              Error Details
-            </div>
-            <div className={`text-red-800 dark:text-red-200 mt-1 break-words ${isMobile ? 'text-xs' : 'text-sm'}`}>
-              {store.connectionError}
-            </div>
+          <div className="mt-3 p-2.5 bg-red-100 dark:bg-red-900/50 rounded border border-red-300 dark:border-red-700 text-xs sm:text-sm text-red-800 dark:text-red-200 break-words" role="alert">
+            {store.connectionError}
           </div>
         )}
 
-        {/* Loading State */}
         {store.isLoading && (
-          <div className="mt-4 p-3 bg-blue-100 dark:bg-blue-900 rounded border border-blue-300 dark:border-blue-700">
-            <div className={`text-blue-900 dark:text-blue-100 ${isMobile ? 'text-xs' : 'text-sm'}`}>
-              Processing request...
-            </div>
+          <div className="mt-3 p-2.5 bg-blue-100 dark:bg-blue-900/50 rounded border border-blue-300 dark:border-blue-700 text-xs sm:text-sm text-blue-800 dark:text-blue-200">
+            Processing request...
           </div>
         )}
       </div>
 
-      {/* Stats */}
       {store.responseHistory.length > 0 && (
-        <div className={`grid grid-cols-2 gap-2 ${isMobile ? '' : 'gap-3'}`}>
-          <div className="p-3 bg-secondary rounded border">
-            <div className={`text-muted-foreground ${isMobile ? 'text-xs' : 'text-sm'}`}>Total Requests</div>
-            <div className={`font-bold ${isMobile ? 'text-lg' : 'text-2xl'}`}>{store.responseHistory.length}</div>
+        <div className="grid grid-cols-2 gap-2 sm:gap-3">
+          <div className="p-3 bg-secondary rounded-lg border">
+            <div className="text-muted-foreground text-xs sm:text-sm">Total</div>
+            <div className="font-bold text-lg sm:text-2xl">{store.responseHistory.length}</div>
           </div>
-          <div className="p-3 bg-secondary rounded border">
-            <div className={`text-muted-foreground ${isMobile ? 'text-xs' : 'text-sm'}`}>Successful</div>
-            <div className={`font-bold text-green-600 dark:text-green-400 ${isMobile ? 'text-lg' : 'text-2xl'}`}>
-              {store.responseHistory.filter(r => !r.response.error).length}
-            </div>
+          <div className="p-3 bg-secondary rounded-lg border">
+            <div className="text-muted-foreground text-xs sm:text-sm">Success</div>
+            <div className="font-bold text-green-600 dark:text-green-400 text-lg sm:text-2xl">{successCount}</div>
           </div>
         </div>
       )}
