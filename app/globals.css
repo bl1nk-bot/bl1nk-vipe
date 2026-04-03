@@ -2,6 +2,33 @@
 @import 'tw-animate-css';
 @source "../node_modules/streamdown/dist/*.js";
 
+/* Safe Area Inset Support for Notched Devices */
+body {
+  padding-top: max(1rem, env(safe-area-inset-top));
+  padding-left: max(1rem, env(safe-area-inset-left));
+  padding-right: max(1rem, env(safe-area-inset-right));
+  padding-bottom: max(1rem, env(safe-area-inset-bottom));
+}
+
+.sticky-header {
+  top: env(safe-area-inset-top);
+}
+
+.sticky-footer {
+  bottom: env(safe-area-inset-bottom);
+}
+
+/* Touch Target & Mobile Optimization */
+button, a, [role="button"] {
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Prevent zoom on input focus (mobile) */
+input, textarea, select {
+  font-size: 16px;
+}
+
 :root {
   --background: rgb(255, 255, 255);
   --foreground: rgb(10, 10, 10);
