@@ -2,25 +2,35 @@
 
 import { useEffect, useState } from 'react'
 
-const MOBILE_BREAKPOINT = 768
+const MOBILE_BREAKPOINT = 640
+const TABLET_BREAKPOINT = 1024
 
 export function useMobile() {
-  const [isMobile, setIsMobile] = useState<boolean | null>(null)
+  const [isMobile, setIsMobile] = useState<boolean>(true)
+  const [isTablet, setIsTablet] = useState<boolean>(false)
+  const [screenWidth, setScreenWidth] = useState<number>(375)
+  const [isHydrated, setIsHydrated] = useState<boolean>(false)
 
   useEffect(() => {
-    const mql = window.matchMedia(`(max-width: ${MOBILE_BREAKPOINT - 1}px)`)
+    setIsHydrated(true)
 
-    const onChange = (e: MediaQueryListEvent | MediaQueryList) => {
-      setIsMobile(e.matches)
+    const checkScreen = () => {
+      const width = window.innerWidth
+      setScreenWidth(width)
+      setIsMobile(width < MOBILE_BREAKPOINT)
+      setIsTablet(width >= MOBILE_BREAKPOINT && width < TABLET_BREAKPOINT)
     }
 
-    // Set initial value
-    onChange(mql)
-    mql.addEventListener('change', onChange)
-
-    return () => mql.removeEventListener('change', onChange)
+    checkScreen()
+    window.addEventListener('resize', checkScreen)
+    return () => window.removeEventListener('resize', checkScreen)
   }, [])
 
-  // Return true on server/during hydration, actual value after mount
-  return { isMobile: isMobile ?? true }
+  // Return sensible defaults during SSR/hydration, actual values after mount
+  return {
+    isMobile,
+    isTablet,
+    screenWidth,
+    isHydrated,
+  }
 }
