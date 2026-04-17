@@ -148,8 +148,11 @@ export class MCPClient {
       this.ws = null
     }
 
-    // Clear pending requests
-    this.pendingRequests.forEach(({ timeout }) => clearTimeout(timeout))
+    // Reject and clear pending requests so callers don't hang
+    this.pendingRequests.forEach(({ reject, timeout }) => {
+      clearTimeout(timeout)
+      reject(new Error('MCP client disconnected'))
+    })
     this.pendingRequests.clear()
 
     this.messageHandlers.clear()
