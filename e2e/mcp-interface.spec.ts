@@ -42,12 +42,9 @@ test.describe('MCP Interface', () => {
     // Try sending without method
     await sendButton.click()
 
-    // Should show error or prevent submission
     const errorMsg = page.locator('[role="alert"]')
-    if (await errorMsg.isVisible()) {
-      const text = await errorMsg.textContent()
-      expect(text).toContain('method')
-    }
+    await expect(errorMsg).toBeVisible()
+    await expect(errorMsg).toContainText(/method/i)
   })
 
   test('should display response display section', async ({ page }) => {
