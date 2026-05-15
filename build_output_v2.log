@@ -1,0 +1,151 @@
+[baseline-browser-mapping] The data in this module is over two months old.  To ensure accurate Baseline data, please update: `npm i baseline-browser-mapping@latest -D`
+   ▲ Next.js 16.0.10 (Turbopack)
+
+   Creating an optimized production build ...
+[baseline-browser-mapping] The data in this module is over two months old.  To ensure accurate Baseline data, please update: `npm i baseline-browser-mapping@latest -D`
+
+> Build error occurred
+Error: Turbopack build failed with 5 errors:
+./components/ai-elements/conversation.tsx:40:9
+Parsing ecmascript source code failed
+[0m [90m 38 |[39m
+ [90m 39 |[39m [36mexport[39m [36mconst[39m [33mConversationScrollButton[39m [33m=[39m ({
+[31m[1m>[22m[39m[90m 40 |[39m   [36mconst[39m { isMobile } [33m=[39m useMobile()
+ [90m    |[39m         [31m[1m^[22m[39m
+ [90m 41 |[39m   className[33m,[39m
+ [90m 42 |[39m   [33m...[39mprops
+ [90m 43 |[39m }[33m:[39m [33mConversationScrollButtonProps[39m) [33m=>[39m {[0m
+
+Expected a semicolon
+
+Import traces:
+  Client Component Browser:
+    ./components/ai-elements/conversation.tsx [Client Component Browser]
+    ./app/chat.tsx [Client Component Browser]
+    ./app/chat.tsx [Server Component]
+    ./app/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./components/ai-elements/conversation.tsx [Client Component SSR]
+    ./app/chat.tsx [Client Component SSR]
+    ./app/chat.tsx [Server Component]
+    ./app/page.tsx [Server Component]
+
+
+./app/mcp/components/request-builder.tsx:7:1
+Export executeMMCRequest doesn't exist in target module
+[0m [90m  5 |[39m [36mimport[39m { [33mButton[39m } [36mfrom[39m [32m'@/components/ui/button'[39m
+ [90m  6 |[39m [36mimport[39m { useMCPStore } [36mfrom[39m [32m'@/lib/mcp-store'[39m
+[31m[1m>[22m[39m[90m  7 |[39m [36mimport[39m { executeMMCRequest } [36mfrom[39m [32m'@/lib/mcp-executor'[39m
+ [90m    |[39m [31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m
+ [90m  8 |[39m
+ [90m  9 |[39m [36mconst[39m commonMethods [33m=[39m [
+ [90m 10 |[39m   { name[33m:[39m [32m'list_resources'[39m[33m,[39m description[33m:[39m [32m'List available resources'[39m }[33m,[39m[0m
+
+The export executeMMCRequest was not found in module [project]/lib/mcp-executor.ts [app-client] (ecmascript).
+Did you mean to import executeMCPRequest?
+All exports of the module are statically known (It doesn't have dynamic exports). So it's known statically that the requested export doesn't exist.
+
+Import traces:
+  Client Component Browser:
+    ./app/mcp/components/request-builder.tsx [Client Component Browser]
+    ./app/mcp/mcp-interface.tsx [Client Component Browser]
+    ./app/mcp/mcp-interface.tsx [Server Component]
+    ./app/mcp/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./app/mcp/components/request-builder.tsx [Client Component SSR]
+    ./app/mcp/mcp-interface.tsx [Client Component SSR]
+    ./app/mcp/mcp-interface.tsx [Server Component]
+    ./app/mcp/page.tsx [Server Component]
+
+
+./app/mcp/components/request-builder.tsx:7:1
+Export executeMMCRequest doesn't exist in target module
+[0m [90m  5 |[39m [36mimport[39m { [33mButton[39m } [36mfrom[39m [32m'@/components/ui/button'[39m
+ [90m  6 |[39m [36mimport[39m { useMCPStore } [36mfrom[39m [32m'@/lib/mcp-store'[39m
+[31m[1m>[22m[39m[90m  7 |[39m [36mimport[39m { executeMMCRequest } [36mfrom[39m [32m'@/lib/mcp-executor'[39m
+ [90m    |[39m [31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m
+ [90m  8 |[39m
+ [90m  9 |[39m [36mconst[39m commonMethods [33m=[39m [
+ [90m 10 |[39m   { name[33m:[39m [32m'list_resources'[39m[33m,[39m description[33m:[39m [32m'List available resources'[39m }[33m,[39m[0m
+
+The export executeMMCRequest was not found in module [project]/lib/mcp-executor.ts [app-ssr] (ecmascript).
+Did you mean to import executeMCPRequest?
+All exports of the module are statically known (It doesn't have dynamic exports). So it's known statically that the requested export doesn't exist.
+
+Import traces:
+  Client Component Browser:
+    ./app/mcp/components/request-builder.tsx [Client Component Browser]
+    ./app/mcp/mcp-interface.tsx [Client Component Browser]
+    ./app/mcp/mcp-interface.tsx [Server Component]
+    ./app/mcp/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./app/mcp/components/request-builder.tsx [Client Component SSR]
+    ./app/mcp/mcp-interface.tsx [Client Component SSR]
+    ./app/mcp/mcp-interface.tsx [Server Component]
+    ./app/mcp/page.tsx [Server Component]
+
+
+./app/mcp/components/server-manager.tsx:7:1
+Export executeMMCRequest doesn't exist in target module
+[0m [90m  5 |[39m [36mimport[39m { [33mButton[39m } [36mfrom[39m [32m'@/components/ui/button'[39m
+ [90m  6 |[39m [36mimport[39m { useMCPStore } [36mfrom[39m [32m'@/lib/mcp-store'[39m
+[31m[1m>[22m[39m[90m  7 |[39m [36mimport[39m { executeMMCRequest[33m,[39m disconnectMCP } [36mfrom[39m [32m'@/lib/mcp-executor'[39m
+ [90m    |[39m [31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m
+ [90m  8 |[39m
+ [90m  9 |[39m [36mexport[39m [36mfunction[39m [33mServerManager[39m() {
+ [90m 10 |[39m   [36mconst[39m { isMobile } [33m=[39m useMobile()[0m
+
+The export executeMMCRequest was not found in module [project]/lib/mcp-executor.ts [app-client] (ecmascript).
+Did you mean to import executeMCPRequest?
+All exports of the module are statically known (It doesn't have dynamic exports). So it's known statically that the requested export doesn't exist.
+
+Import traces:
+  Client Component Browser:
+    ./app/mcp/components/server-manager.tsx [Client Component Browser]
+    ./app/mcp/mcp-interface.tsx [Client Component Browser]
+    ./app/mcp/mcp-interface.tsx [Server Component]
+    ./app/mcp/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./app/mcp/components/server-manager.tsx [Client Component SSR]
+    ./app/mcp/mcp-interface.tsx [Client Component SSR]
+    ./app/mcp/mcp-interface.tsx [Server Component]
+    ./app/mcp/page.tsx [Server Component]
+
+
+./app/mcp/components/server-manager.tsx:7:1
+Export executeMMCRequest doesn't exist in target module
+[0m [90m  5 |[39m [36mimport[39m { [33mButton[39m } [36mfrom[39m [32m'@/components/ui/button'[39m
+ [90m  6 |[39m [36mimport[39m { useMCPStore } [36mfrom[39m [32m'@/lib/mcp-store'[39m
+[31m[1m>[22m[39m[90m  7 |[39m [36mimport[39m { executeMMCRequest[33m,[39m disconnectMCP } [36mfrom[39m [32m'@/lib/mcp-executor'[39m
+ [90m    |[39m [31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m
+ [90m  8 |[39m
+ [90m  9 |[39m [36mexport[39m [36mfunction[39m [33mServerManager[39m() {
+ [90m 10 |[39m   [36mconst[39m { isMobile } [33m=[39m useMobile()[0m
+
+The export executeMMCRequest was not found in module [project]/lib/mcp-executor.ts [app-ssr] (ecmascript).
+Did you mean to import executeMCPRequest?
+All exports of the module are statically known (It doesn't have dynamic exports). So it's known statically that the requested export doesn't exist.
+
+Import traces:
+  Client Component Browser:
+    ./app/mcp/components/server-manager.tsx [Client Component Browser]
+    ./app/mcp/mcp-interface.tsx [Client Component Browser]
+    ./app/mcp/mcp-interface.tsx [Server Component]
+    ./app/mcp/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./app/mcp/components/server-manager.tsx [Client Component SSR]
+    ./app/mcp/mcp-interface.tsx [Client Component SSR]
+    ./app/mcp/mcp-interface.tsx [Server Component]
+    ./app/mcp/page.tsx [Server Component]
+
+
+    at <unknown> (./components/ai-elements/conversation.tsx:40:9)
+    at <unknown> (./app/mcp/components/request-builder.tsx:7:1)
+    at <unknown> (./app/mcp/components/request-builder.tsx:7:1)
+    at <unknown> (./app/mcp/components/server-manager.tsx:7:1)
+    at <unknown> (./app/mcp/components/server-manager.tsx:7:1)

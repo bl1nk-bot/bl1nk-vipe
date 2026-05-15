@@ -1,12 +1,14 @@
 import { forwardRef } from 'react'
-import { Button, type ButtonProps } from './button'
+import { Button } from './button'
 import { cn } from '@/lib/utils'
+
+export type MobileButtonProps = React.ComponentProps<typeof Button>
 
 /**
  * Button with mobile-friendly touch targets (min 44px).
  * Uses Tailwind responsive classes instead of JS-based mobile detection.
  */
-export const MobileButton = forwardRef<HTMLButtonElement, ButtonProps>(
+export const MobileButton = forwardRef<HTMLButtonElement, MobileButtonProps>(
   ({ className, children, ...props }, ref) => (
     <Button
       ref={ref}

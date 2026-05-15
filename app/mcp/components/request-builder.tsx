@@ -1,9 +1,10 @@
 'use client'
+import { useMobile } from '@/hooks/use-mobile'
 
 import { useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { useMCPStore } from '@/lib/mcp-store'
-import { executeMMCRequest } from '@/lib/mcp-executor'
+import { executeMCPRequest } from '@/lib/mcp-executor'
 
 const commonMethods = [
   { name: 'list_resources', description: 'List available resources' },
@@ -14,6 +15,7 @@ const commonMethods = [
 ]
 
 export function RequestBuilder() {
+  const { isMobile } = useMobile()
   const store = useMCPStore()
   const [method, setMethod] = useState('')
   const [params, setParams] = useState('')
@@ -49,7 +51,7 @@ export function RequestBuilder() {
       }
 
       store.setLoading(true)
-      const result = await executeMMCRequest(selectedServer.url, method, parsedParams)
+      const result = await executeMCPRequest(selectedServer.url, method, parsedParams)
       if (!result.success) {
         setError(result.error || 'Request failed')
       }

@@ -1,10 +1,12 @@
 'use client'
+import { useMobile } from '@/hooks/use-mobile'
 
 import { useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { useMCPStore, type MCPHistoryEntry } from '@/lib/mcp-store'
 
 export function ResponseDisplay() {
+  const { isMobile } = useMobile()
   const store = useMCPStore()
   const [expandedId, setExpandedId] = useState<string | null>(null)
   const [copied, setCopied] = useState<string | null>(null)
