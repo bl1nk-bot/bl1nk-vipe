@@ -36,7 +36,7 @@ export async function getMCPClient(serverUrl: string): Promise<MCPClient> {
   return clientInstance
 }
 
-export async function executeMMCRequest(
+export async function executeMCPRequest(
   serverUrl: string,
   method: string,
   params: Record<string, unknown> = {}
