@@ -91,7 +91,7 @@ grep -n "30000" lib/mcp-client.ts
 - [x] MCPClient singleton pattern
 - [x] Functions:
   - [x] getMCPClient(serverUrl)
-  - [x] executeMMCRequest(serverUrl, method, params)
+  - [x] executeMCPRequest(serverUrl, method, params)
   - [x] disconnectMCP()
   - [x] resetMCPStore()
 - [x] Auto-reconnection handling

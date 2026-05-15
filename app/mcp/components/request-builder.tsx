@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { useMCPStore } from '@/lib/mcp-store'
-import { executeMMCRequest } from '@/lib/mcp-executor'
+import { executeMCPRequest } from '@/lib/mcp-executor'
 
 const commonMethods = [
   { name: 'list_resources', description: 'List available resources' },
@@ -49,7 +49,7 @@ export function RequestBuilder() {
       }
 
       store.setLoading(true)
-      const result = await executeMMCRequest(selectedServer.url, method, parsedParams)
+      const result = await executeMCPRequest(selectedServer.url, method, parsedParams)
       if (!result.success) {
         setError(result.error || 'Request failed')
       }

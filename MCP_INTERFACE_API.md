@@ -124,7 +124,7 @@ store.setConnectionError('WebSocket connection failed')
 ```
 
 #### `addToHistory(request, response)`
-Add request/response to history. Automatically called by executeMMCRequest.
+Add request/response to history. Automatically called by executeMCPRequest.
 
 ```typescript
 store.addToHistory(request, response)
@@ -248,11 +248,11 @@ Get or create MCP client for a server. Handles connection switching.
 const client = await getMCPClient('http://localhost:3000')
 ```
 
-### `executeMMCRequest(serverUrl, method, params): Promise<{success, data?, error?}>`
+### `executeMCPRequest(serverUrl, method, params): Promise<{success, data?, error?}>`
 Execute an MCP request with automatic state management.
 
 ```typescript
-const result = await executeMMCRequest(
+const result = await executeMCPRequest(
   'http://localhost:3000',
   'list_resources',
   {}
@@ -380,7 +380,7 @@ function MyPage() {
 'use client'
 
 import { useMCPStore } from '@/lib/mcp-store'
-import { executeMMCRequest, disconnectMCP } from '@/lib/mcp-executor'
+import { executeMCPRequest, disconnectMCP } from '@/lib/mcp-executor'
 import { useState } from 'react'
 
 export function MyMCPComponent() {
@@ -395,7 +395,7 @@ export function MyMCPComponent() {
     store.setConnectionStatus('connecting')
 
     try {
-      const result = await executeMMCRequest(server.url, 'server/info')
+      const result = await executeMCPRequest(server.url, 'server/info')
       if (result.success) {
         store.setConnectionStatus('connected')
       }
@@ -410,7 +410,7 @@ export function MyMCPComponent() {
     const server = store.availableServers.find(s => s.id === store.selectedServer)
     if (!server) return
 
-    const result = await executeMMCRequest(server.url, method)
+    const result = await executeMCPRequest(server.url, method)
     console.log('Response:', result)
   }
 
@@ -469,7 +469,7 @@ if (store.connectionError) {
 ### Request Errors
 
 ```typescript
-const result = await executeMMCRequest(url, method, params)
+const result = await executeMCPRequest(url, method, params)
 
 if (!result.success) {
   console.error('Request failed:', result.error)
@@ -483,7 +483,7 @@ Requests timeout after 30 seconds. Handle with:
 
 ```typescript
 try {
-  const result = await executeMMCRequest(url, method)
+  const result = await executeMCPRequest(url, method)
 } catch (err) {
   if (err.message.includes('timeout')) {
     // Handle timeout

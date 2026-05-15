@@ -40,7 +40,7 @@ interface MCPState {
   }>
 
   // Actions
-  setSelectedServer: (server: string) => void
+  setSelectedServer: (server: string | null) => void
   setConnectionStatus: (status: MCPState['connectionStatus']) => void
   setConnectionError: (error: string | null) => void
   addToHistory: (request: MCPRequest, response: MCPResponse) => void
@@ -88,6 +88,7 @@ export const useMCPStore = create<MCPState>(set => ({
         ...state.responseHistory,
         {
           id: `${Date.now()}-${Math.random()}`,
+          timestamp: Date.now(),
           request,
           response,
         },

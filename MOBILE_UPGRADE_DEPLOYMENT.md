@@ -181,7 +181,7 @@ const store = useMCPStore()
 
 ### MCP Execution
 ```typescript
-const result = await executeMMCRequest(serverUrl, method, params)
+const result = await executeMCPRequest(serverUrl, method, params)
 // Returns: { success: boolean, data?: unknown, error?: string }
 ```
 

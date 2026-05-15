@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { useMCPStore } from '@/lib/mcp-store'
-import { executeMMCRequest, disconnectMCP } from '@/lib/mcp-executor'
+import { executeMCPRequest, disconnectMCP } from '@/lib/mcp-executor'
 
 export function ServerManager() {
   const store = useMCPStore()
@@ -17,7 +17,7 @@ export function ServerManager() {
       setIsConnecting(true)
       store.setSelectedServer(serverId)
       store.setConnectionStatus('connecting')
-      const result = await executeMMCRequest(server.url, 'tools/list')
+      const result = await executeMCPRequest(server.url, 'tools/list')
       if (result.success) {
         store.setConnectionStatus('connected')
       }
