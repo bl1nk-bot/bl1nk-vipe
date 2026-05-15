@@ -14,6 +14,7 @@ export interface MCPResponse {
 
 export interface MCPHistoryEntry {
   id: string
+  timestamp: number
   request: MCPRequest
   response: MCPResponse
 }
