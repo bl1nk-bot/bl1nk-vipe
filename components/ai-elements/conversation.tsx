@@ -27,7 +27,10 @@ export const ConversationContent = ({
   className,
   ...props
 }: ConversationContentProps) => (
-  <StickToBottom.Content className={cn('p-4', className)} {...props} />
+  <StickToBottom.Content
+    className={cn('flex flex-col gap-2 p-2 sm:gap-4 sm:p-4', className)}
+    {...props}
+  />
 )
 
 export type ConversationScrollButtonProps = ComponentProps<typeof Button>
@@ -46,7 +49,8 @@ export const ConversationScrollButton = ({
     !isAtBottom && (
       <Button
         className={cn(
-          'absolute bottom-4 left-[50%] translate-x-[-50%] rounded-full',
+          'absolute bottom-12 left-[50%] translate-x-[-50%] rounded-full',
+          'h-10 w-10 sm:h-9 sm:w-9 sm:bottom-4',
           className
         )}
         onClick={handleScrollToBottom}
