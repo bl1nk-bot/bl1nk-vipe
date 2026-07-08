@@ -1,4 +1,5 @@
 'use client'
+import { useMobile } from '@/hooks/use-mobile'
 
 import { ServerManager } from './components/server-manager'
 import { RequestBuilder } from './components/request-builder'
@@ -7,6 +8,7 @@ import { ConnectionMonitor } from './components/connection-monitor'
 import Link from 'next/link'
 
 export function MCPInterface() {
+  const { isMobile } = useMobile()
   return (
     <main className="flex-1 overflow-hidden h-dvh flex flex-col bg-background">
       {/* Header */}

@@ -1,4 +1,5 @@
 'use client'
+import { useMobile } from '@/hooks/use-mobile'
 
 import { useMCPStore } from '@/lib/mcp-store'
 
@@ -10,6 +11,7 @@ const statusConfig = {
 } as const
 
 export function ConnectionMonitor() {
+  const { isMobile } = useMobile()
   const store = useMCPStore()
   const status = statusConfig[store.connectionStatus]
   const selectedServerInfo = store.availableServers.find(s => s.id === store.selectedServer)

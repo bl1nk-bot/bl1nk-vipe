@@ -1,10 +1,12 @@
 'use client'
+import { useMobile } from '@/hooks/use-mobile'
 
 import type { TextUIPart } from 'ai'
 import { Streamdown } from 'streamdown'
 import { useState } from 'react'
 
 export function Text({ part }: { part: TextUIPart }) {
+  const { isMobile } = useMobile()
   return (
     <div
       className="

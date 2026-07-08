@@ -1,4 +1,5 @@
 'use client'
+import { useMobile } from '@/hooks/use-mobile'
 
 import { Button } from '@/components/ui/button'
 import { ArrowDownIcon } from 'lucide-react'
@@ -39,6 +40,7 @@ export const ConversationScrollButton = ({
   className,
   ...props
 }: ConversationScrollButtonProps) => {
+  const { isMobile } = useMobile()
   const { isAtBottom, scrollToBottom } = useStickToBottomContext()
 
   const handleScrollToBottom = useCallback(() => {

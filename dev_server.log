@@ -1,0 +1,15 @@
+
+> vibe-coding-agent@0.1.0 dev
+> next dev --turbopack
+
+[baseline-browser-mapping] The data in this module is over two months old.  To ensure accurate Baseline data, please update: `npm i baseline-browser-mapping@latest -D`
+   ▲ Next.js 16.0.10 (Turbopack)
+   - Local:         http://localhost:3000
+   - Network:       http://192.168.0.2:3000
+
+ ✓ Starting...
+ ✓ Ready in 1139ms
+ ○ Compiling /mcp ...
+ ⚠ Unsupported metadata viewport is configured in metadata export in /mcp. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ GET /mcp 200 in 5.5s (compile: 4.9s, render: 568ms)
